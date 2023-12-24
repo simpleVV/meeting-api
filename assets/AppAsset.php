@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,6 +9,8 @@
 namespace app\assets;
 
 use yii\web\AssetBundle;
+use yii\web\YiiAsset;
+use yii\bootstrap5\BootstrapAsset;
 
 /**
  * Main application asset bundle.
@@ -22,10 +25,9 @@ class AppAsset extends AssetBundle
     public $css = [
         'css/site.css',
     ];
-    public $js = [
-    ];
+    public $js = [];
     public $depends = [
-        'yii\web\YiiAsset',
-        'yii\bootstrap5\BootstrapAsset'
+        YiiAsset::class,
+        BootstrapAsset::class
     ];
 }

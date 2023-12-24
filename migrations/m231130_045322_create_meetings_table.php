@@ -1,6 +1,7 @@
 <?php
 
 use yii\db\Migration;
+use yii\db\Expression;
 
 /**
  * Handles the creation of table `meetings`.
@@ -18,16 +19,19 @@ class m231130_045322_create_meetings_table extends Migration
                 ->unsigned()
                 ->notNull(),
             'title' => $this
-                ->string(60)
+                ->string(255)
                 ->notNull(),
-            'dt_creation' => $this
-                ->dateTime()
-                ->defaultValue(new \yii\db\Expression('NOW()')),
-            'dt_start' => $this
-                ->dateTime()
+            'date_creation' => $this
+                ->timestamp()
+                ->defaultValue(new Expression('NOW()')),
+            'meeting_date' => $this
+                ->date()
                 ->notNull(),
-            'dt_end' => $this
-                ->dateTime()
+            'start_time' => $this
+                ->time()
+                ->notNull(),
+            'end_time' => $this
+                ->time()
                 ->notNull()
         ]);
     }

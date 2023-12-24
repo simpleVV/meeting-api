@@ -180,7 +180,7 @@ class EmployeeCest
      *
      * @return void
      */
-    public function tryToCreateEmployeeWithoutFirstnameAndFail(ApiTester $I): void
+    public function tryToCreateEmployeeWithoutFirstname(ApiTester $I): void
     {
         //act
         $faker = Factory::create();
@@ -195,9 +195,15 @@ class EmployeeCest
         );
 
         //asset
-        $I->seeResponseCodeIs(HttpCode::UNPROCESSABLE_ENTITY);
-        $I->seeResponseContains(
-            '"message":"Необходимо заполнить «Имя»."'
+        $I->seeResponseCodeIs(HttpCode::CREATED);
+        $I->seeResponseIsJson();
+        $I->seeResponseMatchesJsonType(
+            [
+                // 'firstname' => 'string',
+                'lastname' => 'string',
+                'patronymic' => 'string',
+                'login' => 'string'
+            ]
         );
     }
 
@@ -209,7 +215,7 @@ class EmployeeCest
      *
      * @return void
      */
-    public function tryToCreateEmployeeWithoutLastnameAndFail(ApiTester $I): void
+    public function tryToCreateEmployeeWithoutLastname(ApiTester $I): void
     {
         //act
         $faker = Factory::create();
@@ -225,9 +231,15 @@ class EmployeeCest
         );
 
         //asset
-        $I->seeResponseCodeIs(HttpCode::UNPROCESSABLE_ENTITY);
-        $I->seeResponseContains(
-            '"message":"Необходимо заполнить «Фамилия»."'
+        $I->seeResponseCodeIs(HttpCode::CREATED);
+        $I->seeResponseIsJson();
+        $I->seeResponseMatchesJsonType(
+            [
+                'firstname' => 'string',
+                // 'lastname' => 'string',
+                'patronymic' => 'string',
+                'login' => 'string'
+            ]
         );
     }
 

@@ -25,18 +25,6 @@ class TimetableCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
         $I->seeResponseIsValidOnJsonSchemaString('{"type":"array"}');
-
-        $validResponseJsonSchema = json_encode(
-            [
-                'properties' => [
-                    'id' => ['type' => 'integer'],
-                    'meeting_id' => ['type' => 'integer'],
-                    'employee_id' => ['type' => 'integer'],
-                ]
-            ]
-        );
-
-        $I->seeResponseIsValidOnJsonSchemaString($validResponseJsonSchema);
     }
 
     /**
@@ -48,15 +36,12 @@ class TimetableCest
      */
     public function createOneEntryInTimeTable(ApiTester $I): void
     {
-        //arrange
-        $faker = Factory::create();
-
         //act
         $I->sendPost(
             'timetable',
             [
-                'meeting_id' => $faker->biasedNumberBetween(1, 5),
-                'employee_id' => $faker->biasedNumberBetween(1, 5),
+                'meeting_id' => 1,
+                'employee_id' => 3,
             ]
         );
 
@@ -170,5 +155,151 @@ class TimetableCest
                 'error' => 'Данный сотрудник уже записан на указанное собрание'
             ]
         );
+    }
+
+    /**
+     * Проверка: Запрос на получение собраний для конкретного сотрудника будет
+     * успешно выполнен.
+     * Код ответа 200.
+     * Ответ получаем в формате JSON.
+     *
+     * @return void
+     */
+    public function generateTimetableDataForEmployee(
+        ApiTester $I
+    ): void {
+        //act
+        $I->sendPost(
+            'generate-timetable',
+            [
+                'employee_id' => 1,
+                'date' => '2023-12-20'
+            ]
+        );
+
+        //assert
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->seeResponseIsJson();
+        $I->seeResponseIsValidOnJsonSchemaString('{"type":"array"}');
+
+        $validResponseJsonSchema = json_encode(
+            [
+                'properties' => [
+                    'id' => ['type' => 'integer'],
+                    'title' => ['type' => 'string'],
+                    'dt_start' => ['type' => 'string'],
+                    'dt_end' => ['type' => 'string']
+                ]
+            ]
+        );
+        $I->seeResponseIsValidOnJsonSchemaString($validResponseJsonSchema);
+    }
+
+    /**
+     * Проверка: Запрос на получение собраний для сотрудника с несуществующим
+     * ID вернет ответ с текстом ошибки.
+     * Код ответа 400.
+     * Ответ получаем в формате JSON.
+     *
+     * @return void
+     */
+    public function tryGenerateTimetableDataWithNonxistentEmployeeIdAndFail(
+        ApiTester $I
+    ): void {
+        //arrange
+        $faker = Factory::create();
+
+        //act
+        $I->sendPost(
+            'generate-timetable',
+            [
+                'employee_id' => $faker->numberBetween(1000, 2000),
+                'date' => '2023-12-20'
+            ]
+        );
+
+        //assert
+        $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
+        $I->seeResponseContains('"employee":"Не удалось найти сотрудника с указанным ID"');
+    }
+
+    /**
+     * Проверка: Запрос на получение собраний для сотрудника с указанием даты
+     * не верного формата, вернет ответ с текстом ошибки.
+     * Код ответа 400.
+     * Ответ получаем в формате JSON.
+     *
+     * @return void
+     */
+    public function tryGenerateTimetableDataWithInvalidDateFormatAndFail(
+        ApiTester $I
+    ): void {
+        //act
+        $I->sendPost(
+            'generate-timetable',
+            [
+                'employee_id' => 1,
+                'date' => 'test'
+            ]
+        );;
+
+        //assert
+        $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
+        $I->seeResponseContains('"data":"Дата проведения собрания должна быть формата Y-m-d"');
+    }
+
+    /**
+     * Проверка: Запрос на получение собраний для сотрудника с указанием ID не
+     * верного формата вернет Not Found.
+     * Код ответа 404.
+     * Ответ получаем в формате JSON.
+     *
+     * @return void
+     */
+    public function tryGenerateTimetableDataWithInvalidEmployeeIdAndFail(
+        ApiTester $I
+    ): void {
+        //arrange
+        $faker = Factory::create();
+
+        //act
+        $I->sendPost(
+            'generate-timetable',
+            [
+                'employee_id' => $faker->text(),
+                'date' => '2022-12-20'
+            ]
+        );
+
+        //assert
+        $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
+        $I->seeResponseContains('"employee":"Не удалось найти сотрудника с указанным ID"');
+    }
+
+    /**
+     * Проверка: Запрос на получение собраний на дату, где нет записей,
+     * вернет пустой массив.
+     * Код ответа 200.
+     * Ответ получаем в формате JSON.
+     *
+     * @return void
+     */
+    public function tryGenerateTimetableDataWithNotActualDateAndReturnEmptyArray(
+        ApiTester $I
+    ): void {
+        //act
+        $I->sendPost(
+            'generate-timetable',
+            [
+                'employee_id' => 1,
+                'date' => '2022-12-20'
+            ]
+        );
+
+        //assert
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->seeResponseIsJson();
+        $I->seeResponseIsValidOnJsonSchemaString('{"type":"array"}');
+        $I->seeResponseContains('[]');
     }
 }

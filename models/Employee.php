@@ -30,7 +30,7 @@ use Swagger\Annotations as SWG;
  * @SWG\Property(property="lastname", type="string", description="Отчество")
  * @SWG\Property(property="patronymic", type="string", description="Фамилия")
  * @SWG\Property(property="login", type="string", description="Логин")
- * @SWG\Property(property="dt_creation", type="date-time", description="Время создания")
+ * @SWG\Property(property="date_creation", type="date-time", description="Время создания")
  */
 class Employee extends ActiveRecord
 {
@@ -48,9 +48,9 @@ class Employee extends ActiveRecord
     public function rules()
     {
         return [
-            [['firstname', 'lastname', 'login'], 'required'],
-            [['dt_creation'], 'safe'],
-            [['firstname', 'lastname', 'patronymic', 'login'], 'string', 'max' => 60],
+            [['login'], 'required'],
+            [['date_creation'], 'safe'],
+            [['firstname', 'lastname', 'patronymic', 'login'], 'string', 'max' => 255],
         ];
     }
 
@@ -65,7 +65,7 @@ class Employee extends ActiveRecord
             'lastname' => 'Фамилия',
             'patronymic' => 'Отчество',
             'login' => 'Login',
-            'dt_creation' => 'Dt Creation',
+            'date_creation' => 'Dt Creation',
         ];
     }
 

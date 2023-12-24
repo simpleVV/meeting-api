@@ -4,13 +4,18 @@ namespace app\components;
 
 use Yii;
 
+/**
+ * Class ErrorResponse
+ */
 class ErrorResponse implements ErrorResponseInterface
 {
-
-    public function formErrorResponse(string $message): array
+    /**
+     * @inheritdoc
+     */
+    public function formErrorResponse(array $errors): array
     {
         Yii::$app->response->statusCode = 400;
 
-        return ['error' => $message];
+        return ['errors' => $errors];
     }
 }

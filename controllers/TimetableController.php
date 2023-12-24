@@ -4,11 +4,13 @@ namespace app\controllers;
 
 use Yii;
 use yii\rest\ActiveController;
+use yii\rest\Serializer;
+use yii\web\Response;
 
 use app\models\Timetable;
-use app\models\Meeting;
-use app\models\Employee;
 use app\components\ErrorResponseInterface;
+use app\components\requests\timetable\TimetableAddRequest;
+use app\components\requests\timetable\TimetableGenerateRequest;
 
 /**
  * Class TimetableController
@@ -16,16 +18,19 @@ use app\components\ErrorResponseInterface;
 class TimetableController extends ActiveController
 {
     public $serializer = [
-        'class' => 'yii\rest\Serializer',
+        'class' => Serializer::class,
     ];
 
     public $modelClass = Timetable::class;
-
     public $enableCsrfValidation = false;
-    protected $errorResponse;
+    private $errorResponse;
 
-    public function __construct($id, $module, ErrorResponseInterface $errorResponse, $config = [])
-    {
+    public function __construct(
+        $id,
+        $module,
+        ErrorResponseInterface $errorResponse,
+        $config = []
+    ) {
         $this->errorResponse = $errorResponse;
         parent::__construct($id, $module, $config);
     }
@@ -38,7 +43,6 @@ class TimetableController extends ActiveController
         $actions = parent::actions();
 
         unset($actions['view']);
-        unset($actions['create']);
 
         return $actions;
     }
@@ -81,59 +85,73 @@ class TimetableController extends ActiveController
      * )
      */
     /**
-     * Добавить пользователя на встречу
+     * Добавить пользователя на собрание
      *
-     * @return \yii\web\Response
+     * @return Response
      */
-    public function actionAdd(): \yii\web\Response
+    public function actionAdd(): Response
     {
-        $request = Yii::$app->request;
+        $request = new TimetableAddRequest;
 
-        $meetingId = $request->post('meeting_id');
-        $meeting = Meeting::findOne($meetingId);
+        $request->setRequestParameters();
 
-        $employeeId = $request->post('employee_id');
-        $employee = Employee::findOne($employeeId);
+        $errors = $request->validateRequest();
 
-        if (is_null($meeting)) {
-            return $this->asJson(
-                $this->errorResponse->formErrorResponse(
-                    'Не удалось найти встречу с указанным ID'
-                )
-            );
+        if (!empty($errors)) {
+
+            $errorData = $this->errorResponse->formErrorResponse($errors);
+
+            return $this->asJson($errorData);
         }
 
-        if (is_null($employee)) {
-            return $this->asJson(
-                $this->errorResponse->formErrorResponse(
-                    'Не удалось найти сотрудника с указанным ID'
-                )
-            );
+        return $this->asJson(
+            $request->executeReqiest()
+        );
+    }
+
+    /**
+     * @SWG\Post(
+     *     path="/generate-timetable",
+     *     tags={"Расписание"},
+     *     summary="Получение списка доступных собраний.",
+     *     description="Получение списка собраний, для сотрудника на указанную. дату",
+     *     @SWG\Parameter(name="employee_id", in="formData", description="id сотрудника",
+     *     required=true, type="integer"),
+     *     @SWG\Parameter(name="date", in="formData", description="дата проведения собраний в формате Y-m-d",
+     *     required=true, type="string"),
+     *     @SWG\Response(
+     *         response = 200,
+     *         description = "Список доступных собраний",
+     *         @SWG\Schema(ref = "#/definitions/Timetable")
+     *     ),
+     *     @SWG\Response(
+     *         response=404,
+     *         description="Request not found"
+     *     )
+     * )
+     */
+    /**
+     * Сформировать список собраний для конкретного пользователя
+     *  
+     * @return Response
+     */
+    public function actionGenerate(): Response
+    {
+        $request = new TimetableGenerateRequest;
+
+        $request->setRequestParameters();
+
+        $errors = $request->validateRequest();
+
+        if (!empty($errors)) {
+
+            $errorData = $this->errorResponse->formErrorResponse($errors);
+
+            return $this->asJson($errorData);
         }
 
-        $timetableEntry = Timetable::findOne([
-            'meeting_id' => $meetingId,
-            'employee_id' => $employeeId
-        ]);
-
-        if (!is_null($timetableEntry)) {
-            return $this->asJson(
-                $this->errorResponse->formErrorResponse(
-                    'Данный сотрудник уже записан на указанное собрание'
-                )
-            );
-        }
-
-        $timetableItem = new Timetable();
-
-        $timetableItem->attributes =
-            [
-                'meeting_id' => $meetingId,
-                'employee_id' => $employeeId
-            ];
-
-        if ($timetableItem->save()) {
-            return $this->asJson($timetableItem);
-        }
+        return $this->asJson(
+            $request->executeReqiest()
+        );
     }
 }

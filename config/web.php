@@ -1,5 +1,11 @@
 <?php
 
+use app\components\ErrorResponse;
+use yii\caching\FileCache;
+use yii\log\FileTarget;
+use yii\debug\Module as DebugModule;
+use yii\gii\Module;
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
@@ -15,7 +21,7 @@ $config = [
     ],
     'container' => [
         'definitions' => [
-            'app\components\ErrorResponseInterface' => 'app\components\ErrorResponse',
+            'app\components\ErrorResponseInterface' => ErrorResponse::class,
         ]
     ],
     'components' => [
@@ -26,7 +32,7 @@ $config = [
             ],
         ],
         'cache' => [
-            'class' => 'yii\caching\FileCache',
+            'class' => FileCache::class,
         ],
         'user' => [
             'identityClass' => 'app\models\User',
@@ -39,7 +45,7 @@ $config = [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
                 [
-                    'class' => 'yii\log\FileTarget',
+                    'class' => FileTarget::class,
                     'levels' => ['error', 'warning'],
                 ],
             ],
@@ -53,8 +59,8 @@ $config = [
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'employee'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'meeting'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'timetable'],
-                'GET meetings/<id:\d+>/<date:.*>' => 'meeting/generate',
                 'POST timetable' => 'timetable/add',
+                'POST generate-timetable' => 'timetable/generate',
             ],
         ],
 
@@ -65,12 +71,12 @@ $config = [
 if (YII_ENV_DEV) {
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
-        'class' => 'yii\debug\Module',
+        'class' => DebugModule::class,
     ];
 
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
-        'class' => 'yii\gii\Module',
+        'class' => Module::class,
     ];
 }
 

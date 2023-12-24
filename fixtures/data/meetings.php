@@ -1,29 +1,34 @@
 <?php
 
 return [
-    'meeting0' => [
+    'meetings0' => [
         'title' => 'Собрание 1',
-        'dt_start' => '2023-12-04 09:00',
-        'dt_end' => '2023-12-04 09:15',
+        'meeting_date' => '2023-12-20',
+        'start_time' => '09:00',
+        'end_time' => '09:15',
     ],
-    'meeting1' => [
+    'meetings1' => [
         'title' => 'Собрание 2',
-        'dt_start' => '2023-12-04 09:10',
-        'dt_end' => '2023-12-04 12:00',
+        'meeting_date' => '2023-12-20',
+        'start_time' => '09:10',
+        'end_time' => '12:00',
     ],
-    'meeting2' => [
+    'meetings2' => [
         'title' => 'Собрание 3',
-        'dt_start' => '2023-12-04 12:20',
-        'dt_end' => '2023-12-04 13:00',
+        'meeting_date' => '2023-12-20',
+        'start_time' => '12:20',
+        'end_time' => '13:00',
     ],
-    'meeting3' => [
+    'meetings3' => [
         'title' => 'Собрание 4',
-        'dt_start' => '2023-12-04 14:30',
-        'dt_end' => '2023-12-04 15:00',
+        'meeting_date' => '2023-12-20',
+        'start_time' => '14:30',
+        'end_time' => '15:00',
     ],
-    'meeting4' => [
+    'meetings4' => [
         'title' => 'Собрание 5',
-        'dt_start' => '2023-12-04 14:50',
-        'dt_end' => '2023-12-04 16:00',
+        'meeting_date' => '2023-12-20',
+        'start_time' => '14:50',
+        'end_time' => '16:00',
     ],
 ];

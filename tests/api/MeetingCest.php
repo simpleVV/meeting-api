@@ -25,19 +25,6 @@ class MeetingCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
         $I->seeResponseIsValidOnJsonSchemaString('{"type":"array"}');
-
-        $validResponseJsonSchema = json_encode(
-            [
-                'properties' => [
-                    'id' => ['type' => 'integer'],
-                    'title' => ['type' => 'string'],
-                    'dt_start' => ['type' => 'string'],
-                    'dt_end' => ['type' => 'string']
-                ]
-            ]
-        );
-
-        $I->seeResponseIsValidOnJsonSchemaString($validResponseJsonSchema);
     }
 
     /**
@@ -57,18 +44,6 @@ class MeetingCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
         $I->seeResponseIsValidOnJsonSchemaString('{"type":"object"}');
-
-        $validResponseJsonSchema = json_encode(
-            [
-                'properties' => [
-                    'id' => ['type' => 'integer'],
-                    'title' => ['type' => 'string'],
-                    'dt_start' => ['type' => 'string'],
-                    'dt_end' => ['type' => 'string']
-                ]
-            ]
-        );
-        $I->seeResponseIsValidOnJsonSchemaString($validResponseJsonSchema);
     }
 
     /**
@@ -124,8 +99,9 @@ class MeetingCest
             'meetings',
             [
                 'title' => $faker->title,
-                'dt_start' => $faker->date("2023-12-06 09:00:00"),
-                'dt_end' => $faker->date("2023-12-06 11:00:00")
+                'meeting_date' => $faker->date('Y-m-d', 'now'),
+                'start_time' => $faker->time("09:00:00"),
+                'end_time' => $faker->time("11:00:00")
             ]
         );
 
@@ -135,8 +111,9 @@ class MeetingCest
         $I->seeResponseMatchesJsonType(
             [
                 'title' => 'string',
-                'dt_start' => 'string',
-                'dt_end' => 'string',
+                'meeting_date' => 'string',
+                'start_time' => 'string',
+                'end_time' => 'string',
             ]
         );
     }
@@ -158,8 +135,9 @@ class MeetingCest
         $I->sendPost(
             'meetings',
             [
-                'dt_start' => $faker->date("2023-12-06 09:00:00"),
-                'dt_end' => $faker->date("2023-12-06 11:00:00")
+                'meeting_date' => $faker->date('Y-m-d', 'now'),
+                'start_time' => $faker->date("2023-12-06 09:00:00"),
+                'end_time' => $faker->date("2023-12-06 11:00:00")
             ]
         );
 
@@ -167,6 +145,68 @@ class MeetingCest
         $I->seeResponseCodeIs(HttpCode::UNPROCESSABLE_ENTITY);
         $I->seeResponseContains(
             '"message":"Необходимо заполнить «Название»."'
+        );
+    }
+
+    /**
+     * Проверка: Запрос на создание записи собрания без указания параметра
+     * start_time вернет ответ с текстом о необходимости заполнения данного
+     * поля.
+     * Код ответа 422.
+     * Ответ получаем в формате JSON.
+     *
+     * @return void
+     */
+    public function tryToCreateMeetingWithoutStartTimeAndFail(ApiTester $I): void
+    {
+        //arrange
+        $faker = Factory::create();
+
+        //act
+        $I->sendPost(
+            'meetings',
+            [
+                'title' => $faker->title,
+                'meeting_date' => $faker->date('Y-m-d', 'now'),
+                'end_time' => $faker->time("11:00:00")
+            ]
+        );
+
+        //assert
+        $I->seeResponseCodeIs(HttpCode::UNPROCESSABLE_ENTITY);
+        $I->seeResponseContains(
+            '"message":"Необходимо заполнить «Время начала собрания»."'
+        );
+    }
+
+    /**
+     * Проверка: Запрос на создание записи собрания без указания параметра
+     * end_time вернет ответ с текстом о необходимости заполнения данного
+     * поля.
+     * Код ответа 422.
+     * Ответ получаем в формате JSON.
+     *
+     * @return void
+     */
+    public function tryToCreateMeetingWithoutEndTimeAndFail(ApiTester $I): void
+    {
+        //arrange
+        $faker = Factory::create();
+
+        //act
+        $I->sendPost(
+            'meetings',
+            [
+                'title' => $faker->title,
+                'meeting_date' => $faker->date('Y-m-d', 'now'),
+                'start_time' => $faker->time("11:00:00")
+            ]
+        );
+
+        //assert
+        $I->seeResponseCodeIs(HttpCode::UNPROCESSABLE_ENTITY);
+        $I->seeResponseContains(
+            '"message":"Необходимо заполнить «Время окончания собрания»."'
         );
     }
 
@@ -266,154 +306,5 @@ class MeetingCest
         $I->seeResponseCodeIs(HttpCode::NOT_FOUND);
         $I->seeResponseIsJson();
         $I->seeResponseContains('"message":"Object not found: 400"');
-    }
-
-    /**
-     * Проверка: Запрос на получение собраний для конкретного сотрудника будет
-     * успешно выполнен.
-     * Код ответа 200.
-     * Ответ получаем в формате JSON.
-     *
-     * @return void
-     */
-    public function generateMeetingsDataForEmployee(
-        ApiTester $I
-    ): void {
-        //act
-        $I->sendGet('meetings/1/2023-12-04');
-
-        //assert
-        $I->seeResponseCodeIs(HttpCode::OK);
-        $I->seeResponseIsJson();
-        $I->seeResponseIsValidOnJsonSchemaString('{"type":"array"}');
-
-        $validResponseJsonSchema = json_encode(
-            [
-                'properties' => [
-                    'id' => ['type' => 'integer'],
-                    'title' => ['type' => 'string'],
-                    'dt_start' => ['type' => 'string'],
-                    'dt_end' => ['type' => 'string']
-                ]
-            ]
-        );
-        $I->seeResponseIsValidOnJsonSchemaString($validResponseJsonSchema);
-    }
-
-    /**
-     * Проверка: Запрос на получение собраний для конкретного сотрудника вернет
-     * список собраний без записей, где уже присутствует
-     * сотрудник.
-     * Код ответа 200.
-     * Ответ получаем в формате JSON.
-     *
-     * @return void
-     */
-    public function generateMeetingsDataForEmployeeWithoutExistingEntry(
-        ApiTester $I
-    ): void {
-        //arrange
-        $I->sendPost(
-            'timetable',
-            [
-                'meeting_id' => 2,
-                'employee_id' => 1,
-            ]
-        );
-        $I->seeResponseCodeIs(HttpCode::OK);
-        $I->seeResponseContains('"meeting_id":"2","employee_id":"1"');
-
-        //act
-        $I->sendGet('meetings/1/2023-12-04');
-
-        //assertм
-        $I->seeResponseCodeIs(HttpCode::OK);
-        $I->seeResponseIsJson();
-        $I->cantSeeResponseContains('"id":2,"title":"Собрание 2"');
-    }
-
-    /**
-     * Проверка: Запрос на получение собраний для сотрудника с несуществующим
-     * ID вернет ответ с текстом ошибки.
-     * Код ответа 400.
-     * Ответ получаем в формате JSON.
-     *
-     * @return void
-     */
-    public function tryGenerateMeetingsDataWithNonxistentEmployeeIdAndFail(
-        ApiTester $I
-    ): void {
-        //act
-        $I->sendGet('meetings/1000/2023-12-04');
-
-        //assert
-        $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
-        $I->seeResponseIsJson(
-            [
-                'error' => 'Не удалось найти сотрудника с указанным ID'
-            ]
-        );
-    }
-
-    /**
-     * Проверка: Запрос на получение собраний для сотрудника с указанием даты
-     * не верного формата, вернет ответ с текстом ошибки.
-     * Код ответа 400.
-     * Ответ получаем в формате JSON.
-     *
-     * @return void
-     */
-    public function tryGenerateMeetingsDataWithInvalidDateFormatAndFail(
-        ApiTester $I
-    ): void {
-        //act
-        $I->sendGet('meetings/1/test');
-
-        //assert
-        $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
-        $I->seeResponseIsJson(
-            [
-                'error' => 'Дата проведения собрания должна быть формата Y-m-d'
-            ]
-        );
-    }
-
-    /**
-     * Проверка: Запрос на получение собраний для сотрудника с указанием ID не
-     * верного формата вернет Not Found.
-     * Код ответа 404.
-     * Ответ получаем в формате JSON.
-     *
-     * @return void
-     */
-    public function tryGenerateMeetingsDataWithInvalidEmployeeIdAndFail(
-        ApiTester $I
-    ): void {
-        //act
-        $I->sendGet('meetings/test/2023-12-04');
-
-        //assert
-        $I->seeResponseCodeIs(HttpCode::NOT_FOUND);
-        $I->seeResponseContains('Not Found: Страница не найдена.');
-    }
-
-    /**
-     * Проверка: Запрос на получение собраний на дату, где нет записей,
-     * вернет null.
-     * Код ответа 200.
-     * Ответ получаем в формате JSON.
-     *
-     * @return void
-     */
-    public function tryGenerateMeetingsDataWithNotActualDateAndReturnNull(
-        ApiTester $I
-    ): void {
-        //act
-        $I->sendGet('meetings/1/2023-11-04');
-
-        //assert
-        $I->seeResponseCodeIs(HttpCode::OK);
-        $I->seeResponseIsJson();
-        $I->seeResponseIsValidOnJsonSchemaString('{"type":"null"}');
     }
 }

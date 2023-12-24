@@ -1,34 +1,34 @@
 <?php
 
 return [
-    'employee0' => [
-        'firstname' => 'Сава',
-        'lastname' => 'Аксёнов',
-        'patronymic' => 'Петрович',
-        'login' => 'qnikitin@koseleva.org',
-    ],
-    'employee1' => [
-        'firstname' => 'Милан',
-        'lastname' => 'Виноградов',
+    'employees0' => [
+        'firstname' => 'Давид',
+        'lastname' => 'Муравьёва',
         'patronymic' => 'Михалыч',
-        'login' => 'soboleva.filipp@narod.ru',
+        'login' => 'sevseeva@ustinova.ru',
     ],
-    'employee2' => [
-        'firstname' => 'Лада',
-        'lastname' => 'Щербакова',
-        'patronymic' => 'Семеновна',
-        'login' => 'birukov.anzelika@yandex.ru',
-    ],
-    'employee3' => [
-        'firstname' => 'Федосья',
-        'lastname' => 'Панова',
-        'patronymic' => 'Петровна',
-        'login' => 'abram.nekrasova@list.ru',
-    ],
-    'employee4' => [
-        'firstname' => 'Ефим',
-        'lastname' => 'Ефимов',
+    'employees1' => [
+        'firstname' => 'Алла',
+        'lastname' => 'Якушев',
         'patronymic' => 'Иванович',
-        'login' => 'konstantin.cernova@kulikova.com',
+        'login' => 'lbaranov@uvarova.com',
+    ],
+    'employees2' => [
+        'firstname' => 'Юлий',
+        'lastname' => 'Гусева',
+        'patronymic' => 'Иванович',
+        'login' => 'hmironova@bk.ru',
+    ],
+    'employees3' => [
+        'firstname' => 'Захар',
+        'lastname' => 'Антонова',
+        'patronymic' => 'Михалыч',
+        'login' => 'xsitnikov@bk.ru',
+    ],
+    'employees4' => [
+        'firstname' => 'Олеся',
+        'lastname' => 'Галкина',
+        'patronymic' => '',
+        'login' => 'maiy.ykusev@hotmail.com',
     ],
 ];

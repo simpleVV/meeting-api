@@ -3,8 +3,12 @@
 namespace app\fixtures;
 
 use yii\test\ActiveFixture;
+use app\models\Employee;
 
+/**
+ * Class EmployeeFixture
+ */
 class EmployeeFixture extends ActiveFixture
 {
-    public $modelClass = 'app\models\Employee';
+    public $modelClass = Employee::class;
 }

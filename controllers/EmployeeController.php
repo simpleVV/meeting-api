@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use yii\rest\ActiveController;
+use yii\rest\Serializer;
 
 use Swagger\Annotations as SWG;
 
@@ -14,7 +15,7 @@ use app\models\Employee;
 class EmployeeController extends ActiveController
 {
     public $serializer = [
-        'class' => 'yii\rest\Serializer',
+        'class' => Serializer::class,
     ];
 
     public $modelClass = Employee::class;
@@ -81,11 +82,11 @@ class EmployeeController extends ActiveController
      *     tags={"Сотрудники"},
      *     summary="Создание сотрудника",
      *     @SWG\Parameter(name="firstname", in="formData", type="string",
-     *     required=true, description="Имя"),
+     *     required=false, description="Имя"),
      *     @SWG\Parameter(name="patronymic", in="formData", type="string", 
      *     required=false, description="Отчество"),
      *     @SWG\Parameter(name="lastname", in="formData", type="string",
-     *     required=true, description="Фамилия"),
+     *     required=false, description="Фамилия"),
      *     @SWG\Parameter(name="login", in="formData", type="string",
      *     required=true, description="Логин"),
      *     @SWG\Response(

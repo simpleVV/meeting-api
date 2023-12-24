@@ -1,4 +1,9 @@
 <?php
+
+use yii\symfonymailer\Mailer;
+use yii\symfonymailer\Message;
+use app\components\ErrorResponse;
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/test_db.php';
 
@@ -12,26 +17,21 @@ return [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
-    'container' => [
-        'definitions' => [
-            'app\components\ErrorResponseInterface' => 'app\components\ErrorResponse',
-        ]
-    ],
     'language' => 'ru-RU',
     'timeZone' => 'Asia/Vladivostok',
     'container' => [
         'definitions' => [
-            'app\components\ErrorResponseInterface' => 'app\components\ErrorResponse',
+            'app\components\ErrorResponseInterface' => ErrorResponse::class,
         ]
     ],
     'components' => [
         'db' => $db,
         'mailer' => [
-            'class' => \yii\symfonymailer\Mailer::class,
+            'class' => Mailer::class,
             'viewPath' => '@app/mail',
             // send all mails to a file by default.
             'useFileTransport' => true,
-            'messageClass' => 'yii\symfonymailer\Message'
+            'messageClass' => Message::class
         ],
         'assetManager' => [
             'basePath' => __DIR__ . '/../web/assets',
@@ -44,8 +44,8 @@ return [
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'employee'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'meeting'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'timetable'],
-                'GET meetings/<id:\d+>/<date:.*>' => 'meeting/generate',
                 'POST timetable' => 'timetable/add',
+                'POST generate-timetable' => 'timetable/generate',
             ],
         ],
         'user' => [
@@ -54,12 +54,6 @@ return [
         'request' => [
             'cookieValidationKey' => 'test',
             'enableCsrfValidation' => false,
-            // but if you absolutely need it set cookie domain to localhost
-            /*
-            'csrfCookie' => [
-                'domain' => 'localhost',
-            ],
-            */
         ],
     ],
     'params' => $params,

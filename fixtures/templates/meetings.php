@@ -1,38 +1,35 @@
 <?php
 
+use Faker\Factory;
+
 /**
  * @var $faker Faker\Factory
  * @var $index integer
  */
 
-$faker = Faker\Factory::create('ru_RU');
+$faker = Factory::create('ru_RU');
 
-$mockDateStart = [
-    '2023-12-04 09:00',
-    '2023-12-04 09:10',
-    '2023-12-04 12:20',
-    '2023-12-04 14:30',
-    '2023-12-04 14:50'
+$startTime = [
+    '09:00',
+    '09:10',
+    '12:20',
+    '14:30',
+    '14:50'
 ];
 
-$mockDateEnd = [
-    '2023-12-04 09:15',
-    '2023-12-04 12:00',
-    '2023-12-04 13:00',
-    '2023-12-04 15:00',
-    '2023-12-04 16:00'
+$endTime = [
+    '09:15',
+    '12:00',
+    '13:00',
+    '15:00',
+    '16:00'
 ];
 
-$mockTitle = [
-    'Собрание 1',
-    'Собрание 2',
-    'Собрание 3',
-    'Собрание 4',
-    'Собрание 5'
-];
+$titleCount = $index + 1;
 
 return [
-    'title' => $mockTitle[$index],
-    'dt_start' => $mockDateStart[$index],
-    'dt_end' => $mockDateEnd[$index]
+    'title' => "Собрание {$titleCount}",
+    'meeting_date' => '2023-12-20',
+    'start_time' => $startTime[$index],
+    'end_time' => $endTime[$index]
 ];

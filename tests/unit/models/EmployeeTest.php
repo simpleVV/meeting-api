@@ -10,11 +10,11 @@ use app\models\Employee;
 class EmployeeTest extends Unit
 {
     /**
-     * Проверка на валидность полей модели Employee.
+     * Проверка на валидность параметра firstname модели Employee.
      *
      * @return void
      */
-    public function testValidation(): void
+    public function testValidateFirstname()
     {
         //arrange
         $model = new Employee();
@@ -27,15 +27,28 @@ class EmployeeTest extends Unit
         //act
         $model->setAttribute('firstname', null);
         //assert
-        $this->assertFalse($model->validate(['firstname']));
+        $this->assertTrue($model->validate(['lastname']));
         //act
         $model->setAttribute('firstname', $faker->numberBetween(1, 5));
         //assert
         $this->assertFalse($model->validate(['firstname']));
         //act
-        $model->setAttribute('firstname', $faker->realTextBetween(160, 200));
+        $model->setAttribute('firstname', $faker->realTextBetween(256, 300));
         //assert
         $this->assertFalse($model->validate(['firstname']));
+    }
+
+    /**
+     * Проверка на валидность параметра lastname модели Employee.
+     *
+     * @return void
+     */
+    public function testValidateLastname()
+    {
+        //arrange
+        $model = new Employee();
+        $faker = Factory::create();
+
         //act
         $model->setAttribute('lastname', $faker->lastName());
         //assert
@@ -43,15 +56,29 @@ class EmployeeTest extends Unit
         //act
         $model->setAttribute('lastname', null);
         //assert
-        $this->assertFalse($model->validate(['lastname']));
+        $this->assertTrue($model->validate(['lastname']));
         //act
         $model->setAttribute('lastname', $faker->numberBetween(1, 5));
         //assert
         $this->assertFalse($model->validate(['lastname']));
         //act
-        $model->setAttribute('lastname', $faker->realTextBetween(160, 200));
+        $model->setAttribute('lastname', $faker->realTextBetween(256, 300));
         //assert
         $this->assertFalse($model->validate(['lastname']));
+    }
+
+
+    /**
+     * Проверка на валидность параметра login модели Employee.
+     *
+     * @return void
+     */
+    public function testValidateLogin()
+    {
+        //arrange
+        $model = new Employee();
+        $faker = Factory::create();
+
         //act
         $model->setAttribute('login', $faker->email());
         //assert
@@ -65,7 +92,7 @@ class EmployeeTest extends Unit
         //assert
         $this->assertFalse($model->validate(['login']));
         //act
-        $model->setAttribute('login', $faker->realTextBetween(160, 200));
+        $model->setAttribute('login', $faker->realTextBetween(256, 300));
         //assert
         $this->assertFalse($model->validate(['login']));
     }

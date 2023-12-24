@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Codeception\Actor;
 
 /**
  * Inherited Methods
@@ -17,8 +18,8 @@ declare(strict_types=1);
  * @method void pause($vars = [])
  *
  * @SuppressWarnings(PHPMD)
-*/
-class ApiTester extends \Codeception\Actor
+ */
+class ApiTester extends Actor
 {
     use _generated\ApiTesterActions;
 

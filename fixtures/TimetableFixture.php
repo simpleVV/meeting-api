@@ -3,8 +3,12 @@
 namespace app\fixtures;
 
 use yii\test\ActiveFixture;
+use app\models\Timetable;
 
+/**
+ * Class TimetableFixture
+ */
 class TimetableFixture extends ActiveFixture
 {
-    public $modelClass = 'app\models\Timetable';
+    public $modelClass = Timetable::class;
 }

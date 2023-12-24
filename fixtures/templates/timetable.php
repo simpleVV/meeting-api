@@ -1,13 +1,15 @@
 <?php
 
+use Faker\Factory;
+
 /**
  * @var $faker Faker\Factory
  * @var $index integer
  */
 
-$faker = Faker\Factory::create('ru_RU');
+$faker = Factory::create('ru_RU');
 
 return [
-    'meeting_id' => ++$index,
-    'employee_id' => $faker->numberBetween(1, 5),
+    'meeting_id' => $index + 1,
+    'employee_id' => 1,
 ];

@@ -1,6 +1,7 @@
 <?php
 
 use yii\db\Migration;
+use yii\db\Expression;
 
 /**
  * Handles the creation of table `timetable`.
@@ -13,17 +14,21 @@ class m231130_045911_create_timetable_table extends Migration
     public function safeUp()
     {
         $this->createTable('timetable', [
-            'id' => $this->primaryKey()
+            'id' => $this
+                ->primaryKey()
                 ->unsigned()
                 ->notNull(),
-            'meeting_id' => $this->integer(11)
+            'meeting_id' => $this
+                ->integer(11)
                 ->unsigned()
                 ->notNull(),
-            'employee_id' => $this->integer(11)
+            'employee_id' => $this
+                ->integer(11)
                 ->unsigned()
                 ->notNull(),
-            'dt_creation' => $this->dateTime()
-                ->defaultValue(new \yii\db\Expression('NOW()')),
+            'date_creation' => $this
+                ->timestamp()
+                ->defaultValue(new Expression('NOW()')),
         ]);
 
         // creates index for column `user_id`

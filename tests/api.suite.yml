@@ -10,3 +10,5 @@ modules:
 
     config:
         - Yii2
+Params:
+- .env

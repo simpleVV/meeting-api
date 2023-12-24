@@ -1,6 +1,8 @@
 <?php
 $db = require __DIR__ . '/db.php';
 // test database! Important not to run tests on production or development databases
-$db['dsn'] = 'mysql:host=localhost;dbname=meeting_test';
+$testDbName = $_ENV['TEST_DB_NAME'];
+
+$db['dsn'] = "mysql:host={$localHost};dbname={$testDbName}";
 
 return $db;

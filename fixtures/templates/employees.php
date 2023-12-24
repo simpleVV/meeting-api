@@ -1,11 +1,13 @@
 <?php
 
+use Faker\Factory;
+
 /**
  * @var $faker Faker\Factory
  * @var $index integer
  */
 
-$faker = Faker\Factory::create('ru_RU');
+$faker = Factory::create('ru_RU');
 
 $mockPatronymic = [
     'Иванович',
