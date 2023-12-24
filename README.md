@@ -24,9 +24,9 @@
 4) Выполняем команду php yii migrate - для создания таблиц базы данных
 
 5) Для генерации тестовых данных необходимо выполнить следующую команду:
-php yii fixture/generate employees --count= num - сгенерировать тестовые данные сотрудников
-php yii fixture/generate meetings --count= num - сгенерировать тестовые данные собраний
-php yii fixture/generate timetable --count= num - сгенерировать тестовые данные собраний,
+	1) php yii fixture/generate employees --count= num - сгенерировать тестовые данные сотрудников
+	2) php yii fixture/generate meetings --count= num - сгенерировать тестовые данные собраний
+	3) php yii fixture/generate timetable --count= num - сгенерировать тестовые данные собраний,
 где num - это количество записей
 
 7) Для загрузки тестовых данных в базу, необходимо выполнить следующую команду:
